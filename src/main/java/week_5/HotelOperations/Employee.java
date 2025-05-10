@@ -34,7 +34,7 @@ public class Employee {
         return total;
     }
 
-        public double getStartTime() {
+    public double getStartTime() {
         return startTime;
     }
 

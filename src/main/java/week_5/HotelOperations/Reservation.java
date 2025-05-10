@@ -46,6 +46,7 @@ public class Reservation {
             this.price *= 1.1;
         }
     }
+
     public int getNumberOfNights() {
         return numberOfNights;
     }
