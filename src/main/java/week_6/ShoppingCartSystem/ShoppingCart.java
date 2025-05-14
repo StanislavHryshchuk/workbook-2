@@ -43,7 +43,7 @@ public class ShoppingCart {
     }
 
     public double sumWithTaxes(double sum){
-        sum += sum * (1-taxes);
+        sum += sum * taxes;
         return sum;
     }
 }
