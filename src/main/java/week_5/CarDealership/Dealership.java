@@ -103,15 +103,6 @@ public class Dealership {
         DealerShipFileManager.saveTheDealership(this);
     }
 
-    public Dealership lookDealershipByName(String dealershipName){
-       return DealerShipFileManager.getDealerShipByName(dealershipName);
-    }
-
-    public List<Dealership> getInventoryByNameOfDealership(){
-        DealerShipFileManager.
-        return vehicles;
-    }
-
     public String toFileString() {
         return   name + "|" + address + "|" + phoneNumber;
     }
@@ -147,6 +138,5 @@ public class Dealership {
     public void setName(String name) {
         this.name = name;
     }
-
 
 }

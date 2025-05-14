@@ -1,8 +1,6 @@
 package week_5.CarDealership;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
+import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
 
@@ -17,7 +15,7 @@ public class UserInterface {
     }
 
     public void userMenu(){
-        init();
+
         boolean running = true;
         while (running) {
             System.out.println("\n          *** Home Screen *** ");
@@ -36,6 +34,9 @@ public class UserInterface {
                     0. Exit.""");
             try {
                 int userChoice = Integer.parseInt(scanner.nextLine());
+                if(dealership == null && userChoice != 10 && userChoice != 0){
+                    init();
+                }
                 switch (userChoice) {
                     case 1:
                         processPriceByRequest();
@@ -65,7 +66,7 @@ public class UserInterface {
                         processRemoveVehicleRequest();
                         break;
                     case 10:
-                        askQuestion();
+                       selectDealership();
                         break;
                     case 0:
                         running = false;
@@ -140,6 +141,14 @@ public class UserInterface {
     }
 
     public void processAddVehicleRequest(){
+
+        System.out.println("Do you want add vehicle to existing Dealership or you want to create a new Dealership and save the vehicle to it?");
+        System.out.print("\nYes -> create a new Dealership and add Vehicle\nNo -> add Vehicle to existing Dealership");
+        String userSelect = scanner.nextLine().trim().toLowerCase();
+        if (userSelect.equalsIgnoreCase("yes")){
+            processCreateDealershipRequest();
+        }
+
         System.out.println("Please enter the VIN number");
         String vinNumber = scanner.nextLine().trim().toUpperCase();
 
@@ -202,39 +211,56 @@ public class UserInterface {
         }
     }
 
-    public Dealership processDealerShipByNameRequest (String name){
-        return dealership.lookDealershipByName(name);
-    }
-    public void displayDealership(){
+    public void displayDealership(Dealership dealership){
         System.out.println(dealership.getName() + "|" + dealership.getAddress() + "|" + dealership.getPhoneNumber());
     }
 
     public List<Vehicle> processVehicleByDealerShipNameRequest(){
-        return dealership.getInventoryByNameOfDealership()
+        return dealership.getInventory();
     }
 
-    public void askQuestion(){
+    public void selectDealership(){
         System.out.println("Would you like to see a List of Dealerships?\nIf 'NO' we would provide an inventory of random Dealership");
-        String userChoice = scanner.nextLine().trim().toLowerCase();
-        boolean running = true;
-        while(running) {
-            switch (userChoice.toLowerCase()) {
-                case "yes":
-                    DealerShipFileManager.displayDealershipFile();
+        try{
+            String userChoice = scanner.nextLine().trim().toLowerCase();
+            boolean running = true;
+            while(running) {
+                switch (userChoice.toLowerCase()) {
+                    case "yes":
+                        DealerShipFileManager.displayDealershipFile();
 
-                    System.out.println("Enter the name of Dealership:");
-                    String userDealership = scanner.nextLine().trim();
+                        System.out.println("Enter the name of Dealership:");
+                        String userDealership = scanner.nextLine().trim().toLowerCase();
 
-                    dealership = processDealerShipByNameRequest(userDealership);
-                    System.out.println(dealership.getName());
-                    running = false;
-                    break;
-                case "no":
-                    dealership = DealerShipFileManager.getRandomDealerShip();
-
-                    break;
+                        dealership = DealerShipFileManager.getDealerShipByName(userDealership);
+                        displayDealership(dealership);
+                        displayList(processVehicleByDealerShipNameRequest());
+                        running = false;
+                        break;
+                    case "no":
+                        dealership = DealerShipFileManager.getRandomDealerShip();
+                        displayDealership(dealership);
+                        displayList(processVehicleByDealerShipNameRequest());
+                        running = false;
+                        break;
+                }
             }
+        }catch (InputMismatchException e){
+            System.out.println(e.getMessage());
         }
+    }
+
+    public void processCreateDealershipRequest(){
+        System.out.println("Please enter the Dealership name:");
+        String userDealershipName = scanner.nextLine().trim();
+
+        System.out.println("Please provide an address of Dealership:");
+        String userDealershipAddress = scanner.nextLine().trim();
+
+        System.out.println("Please provide a Phone number for Dealership:");
+        String userDealershipPhone = scanner.nextLine().trim();
+
+        Dealership dealership = new Dealership(userDealershipName,userDealershipAddress,userDealershipPhone);
     }
 }
 
