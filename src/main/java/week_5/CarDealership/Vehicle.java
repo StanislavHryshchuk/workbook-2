@@ -96,7 +96,7 @@ public class Vehicle {
 
     @Override
     public int hashCode() {
-        return Objects.hash(vinNumber, year, make, model, vehicleType, color, odometer, price);
+        return Objects.hash(vinNumber);
     }
 
     public String toFileString() {

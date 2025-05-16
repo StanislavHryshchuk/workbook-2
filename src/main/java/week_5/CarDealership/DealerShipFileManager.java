@@ -39,11 +39,12 @@ public class DealerShipFileManager {
         } catch (IOException e) {
             System.out.println(e.getMessage());
         }
-        getInventoryOfDealership(dealership);
         if(dealership != null){
             INVENTORY_FILENAME = "src\\main\\java\\week_5\\CarDealership\\resources\\DealershipInventory\\" + dealership.getName() + " Inventory.csv";
+        } else {
+            System.out.println("No dealership");
         }
-
+        getInventoryOfDealership(dealership);
         return dealership;
     }
 

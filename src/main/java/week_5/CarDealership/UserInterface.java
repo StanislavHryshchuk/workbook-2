@@ -1,5 +1,6 @@
 package week_5.CarDealership;
 
+import java.time.LocalDate;
 import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
@@ -30,6 +31,7 @@ public class UserInterface {
                     7. List all vehicles.
                     8. Add a vehicle.
                     9. Remove a vehicle.
+                    10. Create a contract.
                     0. Exit.""");
             try {
                 int userChoice = Integer.parseInt(scanner.nextLine());
@@ -61,6 +63,9 @@ public class UserInterface {
                         break;
                     case 9:
                         processRemoveVehicleRequest();
+                        break;
+                    case 10:
+                        processContractCreationRequest();
                         break;
                     case 0:
                         running = false;
@@ -161,8 +166,8 @@ public class UserInterface {
     public void processRemoveVehicleRequest(){
         System.out.println("Please enter the VIN number");
         String vinNumber = scanner.nextLine().trim();
-
-        dealership.removeVehicleFromListAndFile(vinNumber);
+        Vehicle vehicle = new Vehicle(vinNumber,0,null,null,null,null,0,0);
+        dealership.removeVehicleFromListAndFile(vehicle);
     }
 
     public void displayList(List<Vehicle> vehicles) {
@@ -173,7 +178,7 @@ public class UserInterface {
     }
 
     public void selectDealership(){
-
+        System.out.println("\n *** With what Dealership you would like to work ***");
         DealerShipFileManager.displayDealershipFile();
 
         System.out.println("Enter the name of Dealership:");
@@ -183,6 +188,63 @@ public class UserInterface {
 
     }
 
+    public void processContractCreationRequest(){
+        try {
+            int currentYear = LocalDate.now().getYear();
+            String date = LocalDate.now().toString();
+
+            System.out.println("This contract for Sale or Lease?");
+            String contractType = scanner.nextLine().trim().toLowerCase().replaceAll("\\s{2,}", " ");
+
+            System.out.println("Please provide the VIN number of the vehicle:");
+            String userVIN = scanner.nextLine().trim().toUpperCase();
+
+            Vehicle userVehicle = null;
+            for (Vehicle vehicle: dealership.getInventory()){
+                if (vehicle.getVinNumber().equalsIgnoreCase(userVIN)){
+                    userVehicle = vehicle;
+                    System.out.println("Vehicle found: " + userVehicle.toFileString());
+                }
+            }
+
+            System.out.println("Please provide your full name:");
+            String userFullName = scanner.nextLine().trim();
+
+            System.out.println("Please provide your email address:");
+            String userEmail = scanner.nextLine().trim();
+
+            if (userVehicle == null) {
+                System.out.println("Vehicle with VIN " + userVIN + " not found.");
+                return;
+            }
+
+            if (contractType.equalsIgnoreCase("Lease") && (currentYear - userVehicle.getYear() > 3)){
+                System.out.println("You cannot lease vehicle over 3 years old");
+                return;
+            }
+
+            if(contractType.equalsIgnoreCase("Sale")){
+
+                System.out.println("Do you need finance:");
+                boolean financeQuestion = scanner.nextLine().trim().equalsIgnoreCase("yes");
+
+                Contract saleContract = new SalesContract(date,userFullName,userEmail, userVehicle,financeQuestion);
+                ContractFileManager.writeContractToFile(saleContract);
+
+            }else if (contractType.equalsIgnoreCase("Lease")){
+                Contract leaseContract = new LeaseContract(date,userFullName,userEmail,userVehicle);
+                ContractFileManager.writeContractToFile(leaseContract);
+
+            }else{
+                System.out.println("Invalid contract type. Please enter 'Sale' or 'Lease'.");
+            }
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+        }
+
+
+
+    }
 }
 
 

@@ -1,22 +1,14 @@
 package week_5.CarDealership;
 
 public class SalesContract extends Contract {
-    private double salesTaxAmount;
+
     private double recordingFee = 100;
     private boolean financeQuestion;
 
-    public SalesContract(String date, String customerName,String customerEmail ,Vehicle vehicle ,boolean financeQuestion) {
+    public SalesContract(String date, String customerName, String customerEmail, Vehicle vehicle, boolean financeQuestion) {
         super(date, vehicle, customerName, customerEmail);
         this.financeQuestion = financeQuestion;
 
-    }
-
-    public double getSalesTaxAmount() {
-        return salesTaxAmount;
-    }
-
-    public void setSalesTaxAmount(double salesTaxAmount) {
-        this.salesTaxAmount = salesTaxAmount;
     }
 
     public double getRecordingFee() {
@@ -36,6 +28,24 @@ public class SalesContract extends Contract {
     }
 
     @Override
+    public String toFileString() {
+        String financeStatus = isFinanceQuestion() ? "YES" : "NO";
+        return String.format(
+                "SALE|%s|%s|%s|%s|%.2f|%.2f|%.2f|%.2f|%s|%.2f",
+                getDate(),
+                getCustomerName(),
+                getCustomerEmail(),
+                getVehicle().toFileString(),
+                calculateSalesTaxAmount(),
+                recordingFee,
+                processingFee(),
+                getTotalPrice(),
+                financeStatus,
+                getMonthlyPayment()
+        );
+    }
+
+    @Override
     public double getTotalPrice() {
         return getVehicle().getPrice() + calculateSalesTaxAmount() + processingFee() + recordingFee;
     }
@@ -45,11 +55,10 @@ public class SalesContract extends Contract {
        if (!financeQuestion){
            return 0;
        }
-
         if (getVehicle().getPrice() >= 10000){
             return getVehicle().getPrice() * (0.0425 / 12) / (1 - Math.pow(1 + (0.0425 / 12),-48));
        }else {
-            return getVehicle().getPrice() * (0.0252 / 12) / (1 - Math.pow(1 + (0.0525 / 12),-24));
+            return getVehicle().getPrice() * (0.0525 / 12) / (1 - Math.pow(1 + (0.0525 / 12),-24));
        }
     }
 

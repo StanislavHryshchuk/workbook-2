@@ -1,7 +1,10 @@
 package week_5.CarDealership;
 
-public abstract class Contract {
+import java.time.LocalDate;
+import java.util.Scanner;
 
+public abstract class Contract {
+    public Scanner scanner = new Scanner(System.in);
     private String date;
     private String customerName;
     private String customerEmail;
@@ -49,6 +52,8 @@ public abstract class Contract {
     }
 
     public abstract double getTotalPrice();
+
+    public abstract String toFileString();
 
     public abstract double getMonthlyPayment();
 }
