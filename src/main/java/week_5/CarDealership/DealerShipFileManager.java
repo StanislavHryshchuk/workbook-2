@@ -4,149 +4,76 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 public class DealerShipFileManager {
-    public static String INVENTORY_FILENAME = "src\\main\\java\\week_5\\CarDealership\\resources\\inventory.csv";
+
+    public static String INVENTORY_FILENAME;
     public static String DEALERSHIPS_FILENAME = "src\\main\\java\\week_5\\CarDealership\\resources\\listOfDealerships";
 
-    public static Dealership getDealership(){
-
-        String[] arrDealerShipInfo = null;
-        List<Vehicle> vehicles = new ArrayList<>();
-
-        try (BufferedReader br = new BufferedReader(new FileReader(INVENTORY_FILENAME))){
-
-            String dealerShipInfo = br.readLine();
-            arrDealerShipInfo = dealerShipInfo.split("\\|");
-
+    public static void displayDealershipFile() {
+        try (BufferedReader br = new BufferedReader(new FileReader(DealerShipFileManager.DEALERSHIPS_FILENAME))) {
             String line;
-            while ((line = br.readLine())!= null){
-                String[] arrVehicle = line.split("\\|");
-                if (arrVehicle.length != 8) {
-                    continue;
-                }
-                Vehicle vehicle = new Vehicle(arrVehicle[0],Integer.parseInt(arrVehicle[1]) ,arrVehicle[2],arrVehicle[3],arrVehicle[4],arrVehicle[5],Double.parseDouble(arrVehicle[6]),Double.parseDouble(arrVehicle[7]));
 
-                vehicles.add(vehicle);
-                if(isDealershipLine(line)){
-                    break;
-                }
+            while ((line = br.readLine()) != null) {
+                System.out.println(line);
             }
-        }catch (IOException e){
+        } catch (IOException e) {
             System.out.println(e.getMessage());
         }
-
-        Dealership dealership = new Dealership(arrDealerShipInfo[0],arrDealerShipInfo[1],arrDealerShipInfo[2]);
-        dealership.setInventory(vehicles);
-
-        return dealership;
     }
 
-    public static Dealership getDealerShipByName(String dealershipName){
+    public static Dealership getDealerShipByName(String dealershipName) {
         Dealership dealership = null;
 
-        try (BufferedReader br = new BufferedReader(new FileReader(DEALERSHIPS_FILENAME))){
+        try (BufferedReader br = new BufferedReader(new FileReader(DEALERSHIPS_FILENAME))) {
             String line;
-            while ((line = br.readLine())!= null){
+            while ((line = br.readLine()) != null) {
 
                 String[] arrDealerShipInfo = line.split("\\|");
-
-                if (arrDealerShipInfo[0].equalsIgnoreCase(dealershipName)){
-                    dealership = new Dealership(arrDealerShipInfo[0],arrDealerShipInfo[1],arrDealerShipInfo[2]);
-                    dealership.setInventory(getVehiclesOfDealership(dealership));
+                if (arrDealerShipInfo[0].equalsIgnoreCase(dealershipName)) {
+                    dealership = new Dealership(arrDealerShipInfo[0], arrDealerShipInfo[1], arrDealerShipInfo[2]);
                     break;
                 }
             }
-        }catch (IOException e){
+        } catch (IOException e) {
             System.out.println(e.getMessage());
         }
+        getInventoryOfDealership(dealership);
+        if(dealership != null){
+            INVENTORY_FILENAME = "src\\main\\java\\week_5\\CarDealership\\resources\\DealershipInventory\\" + dealership.getName() + " Inventory.csv";
+        }
+
         return dealership;
     }
 
-    public static void saveTheDealership(Dealership dealership){
+    public static void saveTheDealership(Dealership dealership) {
         List<Vehicle> inventory = dealership.getInventory();
 
-        try(FileWriter fr = new FileWriter(INVENTORY_FILENAME)){
+        try (FileWriter fr = new FileWriter(INVENTORY_FILENAME)) {
             fr.write(dealership.toFileString() + "\n");
-
-            for (Vehicle vehicle: inventory){
+            for (Vehicle vehicle : inventory) {
                 fr.write(vehicle.toFileString() + "\n");
             }
 
-        }catch (IOException e){
+        } catch (IOException e) {
             System.out.println(e.getMessage());
         }
     }
 
-    public static void displayDealershipFile(){
-        try (BufferedReader br = new BufferedReader(new FileReader(DEALERSHIPS_FILENAME))){
+    public static void getInventoryOfDealership(Dealership dealership) {
+
+        try (BufferedReader br = new BufferedReader(new FileReader(INVENTORY_FILENAME))) {
             String line;
+            while ((line = br.readLine()) != null) {
 
-            while ((line = br.readLine())!= null){
-                System.out.println(line);
+                String[] arrVehicleInfo = line.split("\\|");
+                Vehicle vehicle = new Vehicle(arrVehicleInfo[0], Integer.parseInt(arrVehicleInfo[1]), arrVehicleInfo[2], arrVehicleInfo[3], arrVehicleInfo[4], arrVehicleInfo[5], Double.parseDouble(arrVehicleInfo[6]), Double.parseDouble(arrVehicleInfo[7]));
+
+                dealership.getInventory().add(vehicle);
             }
-        }catch (IOException e){
+        } catch (IOException e) {
             System.out.println(e.getMessage());
         }
-    }
-
-    public static Dealership getRandomDealerShip(){
-        int lineCount = 0;
-        int randomNum = (int) (Math.random() * 10) + 1;
-        String[] arrDealership;
-        Dealership dealership = null;
-        try (BufferedReader br = new BufferedReader(new FileReader(DEALERSHIPS_FILENAME))){
-            String line;
-            while((line = br.readLine()) != null){
-                lineCount++;
-                if(randomNum == lineCount && isDealershipLine(line)){
-                    arrDealership = line.split("\\|");
-                    dealership = new Dealership(arrDealership[0],arrDealership[1],arrDealership[2]);
-                    break;
-                }
-            }
-            dealership.setInventory(getVehiclesOfDealership(dealership));
-        }catch (IOException e){
-            System.out.println(e.getMessage());
-        }
-        return dealership;
-    }
-
-    private static boolean isDealershipLine(String line) {
-        if (!line.contains("|")) return false;
-        String[] parts = line.split("\\|");
-        return parts.length == 3;
-    }
-
-    public static List<Vehicle> getVehiclesOfDealership(Dealership dealership){
-        List<Vehicle> vehicles = new ArrayList<>();
-
-        try (BufferedReader br = new BufferedReader(new FileReader(INVENTORY_FILENAME))){
-
-            String line;
-            while ((line = br.readLine())!= null){
-                if(isDealershipLine(line)){
-                    if(!line.split("\\|")[0].equals(dealership.getName())){
-                        continue;
-                    }
-                    while((line = br.readLine()) != null){
-                        if (isDealershipLine(line)){
-                            break;
-                        }
-                        String[] arrVehicle = line.split("\\|");
-                        if(arrVehicle.length == 8){
-                            Vehicle vehicle = new Vehicle(arrVehicle[0],Integer.parseInt(arrVehicle[1]) ,arrVehicle[2],arrVehicle[3],arrVehicle[4],arrVehicle[5],Double.parseDouble(arrVehicle[6]),Double.parseDouble(arrVehicle[7]));
-                            vehicles.add(vehicle);
-                        }
-                    }
-                    break;
-                }
-            }
-        }catch (IOException e){
-            System.out.println(e.getMessage());
-        }
-        return vehicles;
     }
 }

@@ -98,8 +98,12 @@ public class Dealership {
         }
     }
 
-    public void removeVehicleFromListAndFile(Vehicle vehicle){
-        inventory.remove(vehicle);
+    public void removeVehicleFromListAndFile(String vehicleVin){
+        for (Vehicle vehicle: inventory){
+            if (vehicleVin.equalsIgnoreCase(vehicle.getVinNumber())){
+                inventory.remove(vehicle);
+            }
+        }
         DealerShipFileManager.saveTheDealership(this);
     }
 

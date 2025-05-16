@@ -91,7 +91,7 @@ public class Vehicle {
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         Vehicle vehicle = (Vehicle) o;
-        return year == vehicle.year && Double.compare(odometer, vehicle.odometer) == 0 && Double.compare(price, vehicle.price) == 0 && Objects.equals(vinNumber, vehicle.vinNumber) && Objects.equals(make, vehicle.make) && Objects.equals(model, vehicle.model) && Objects.equals(vehicleType, vehicle.vehicleType) && Objects.equals(color, vehicle.color);
+        return Objects.equals(vinNumber, vehicle.vinNumber);
     }
 
     @Override
