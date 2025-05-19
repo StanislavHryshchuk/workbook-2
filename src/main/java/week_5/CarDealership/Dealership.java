@@ -18,6 +18,38 @@ public class Dealership {
 
     }
 
+    public List<Vehicle> getInventory() {
+        return inventory;
+    }
+
+    public void setInventory(List<Vehicle> inventory) {
+       this.inventory = inventory;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public List<Vehicle> getVehicleByThePriceRange(double minPrice, double maxPrice){
         List<Vehicle> vehiclesByPriceRange = new ArrayList<>();
 
@@ -108,36 +140,24 @@ public class Dealership {
         return   name + "|" + address + "|" + phoneNumber;
     }
 
-    public List<Vehicle> getInventory() {
-        return inventory;
-    }
+    public Contract getContract(String contractType,String date, String userFullName, String userEmail, Vehicle userVehicle, boolean financeQuestion){
 
-    public void setInventory(List<Vehicle> inventory) {
-       this.inventory = inventory;
-    }
+        Contract contract = null;
 
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
+        if(contractType.equalsIgnoreCase("Sale")){
 
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }
+            Contract saleContract = new SalesContract(contractType,date,userFullName,userEmail, userVehicle,financeQuestion);
+            ContractFileManager.writeContractToFile(saleContract);
+             contract = saleContract;
 
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
+        }else if (contractType.equalsIgnoreCase("Lease")){
+            Contract leaseContract = new LeaseContract(contractType, date,userFullName,userEmail,userVehicle);
+            ContractFileManager.writeContractToFile(leaseContract);
+            contract = leaseContract;
+        }else{
+            System.out.println("Invalid contract type. Please enter 'Sale' or 'Lease'.");
+        }
+        return contract;
     }
 
 }

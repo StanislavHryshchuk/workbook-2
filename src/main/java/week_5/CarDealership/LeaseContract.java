@@ -1,8 +1,18 @@
 package week_5.CarDealership;
 
 public class LeaseContract extends Contract {
-    public LeaseContract(String date, String customerName, String customerEmail, Vehicle vehicle) {
-        super(date, vehicle, customerName, customerEmail);
+    private double expectedEndinValue;
+    private double leaseFee;
+    private double monthlyPayment;
+    public LeaseContract(String typeOfContract,String date, String customerName, String customerEmail, Vehicle vehicle) {
+        super(typeOfContract ,date, vehicle, customerName, customerEmail);
+    }
+
+    public LeaseContract (String typeOfContract, String date, String customerName, String customerEmail, Vehicle vehicle, double expectedEndingValue, double leaseFee, double monthlyPayment){
+        super(typeOfContract, date, vehicle, customerName, customerEmail);
+        this.expectedEndinValue = expectedEndingValue;
+        this.leaseFee = leaseFee;
+        this.monthlyPayment = monthlyPayment;
     }
 
     @Override
@@ -25,7 +35,8 @@ public class LeaseContract extends Contract {
     @Override
     public String toFileString() {
         return String.format(
-                "LEASE|%s|%s|%s|%s|%.2f|%.2f|%.2f",
+                "%s|%s|%s|%s|%s|%.2f|%.2f|%.2f",
+                getTypeOfContract(),
                 getDate(),
                 getCustomerName(),
                 getCustomerEmail(),

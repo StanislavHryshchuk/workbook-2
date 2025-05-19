@@ -1,9 +1,10 @@
 package week_5.CarDealership;
 
 import java.time.LocalDate;
-import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
+
+
 
 public class UserInterface {
     private Scanner scanner = new Scanner(System.in);
@@ -12,7 +13,18 @@ public class UserInterface {
     public UserInterface(){}
 
     public void display(){
-        userMenu();
+
+        System.out.println("User or Admin Log In?");
+        String userOrAdmin = scanner.nextLine().trim().toLowerCase().replaceAll("\\s{2,}", " ");
+        if (userOrAdmin.equalsIgnoreCase("user")){
+            userMenu();
+        } else if (userOrAdmin.equalsIgnoreCase("Admin")) {
+            System.out.println("Please enter the password:");
+            String password = scanner.nextLine().trim();
+            AdminInterface admin = new AdminInterface();
+            admin.adminMenu(password);
+        }
+
     }
 
     public void userMenu(){
@@ -65,7 +77,7 @@ public class UserInterface {
                         processRemoveVehicleRequest();
                         break;
                     case 10:
-                        processContractCreationRequest();
+                        processContractInformationRequest();
                         break;
                     case 0:
                         running = false;
@@ -188,7 +200,7 @@ public class UserInterface {
 
     }
 
-    public void processContractCreationRequest(){
+    public void processContractInformationRequest(){
         try {
             int currentYear = LocalDate.now().getYear();
             String date = LocalDate.now().toString();
@@ -196,16 +208,16 @@ public class UserInterface {
             System.out.println("This contract for Sale or Lease?");
             String contractType = scanner.nextLine().trim().toLowerCase().replaceAll("\\s{2,}", " ");
 
+            boolean financeQuestion = false;
+            if(contractType.equalsIgnoreCase("Sale")) {
+                System.out.println("Do you need finance:");
+                financeQuestion = scanner.nextLine().trim().equalsIgnoreCase("yes");
+            }
+
             System.out.println("Please provide the VIN number of the vehicle:");
             String userVIN = scanner.nextLine().trim().toUpperCase();
 
-            Vehicle userVehicle = null;
-            for (Vehicle vehicle: dealership.getInventory()){
-                if (vehicle.getVinNumber().equalsIgnoreCase(userVIN)){
-                    userVehicle = vehicle;
-                    System.out.println("Vehicle found: " + userVehicle.toFileString());
-                }
-            }
+            Vehicle userVehicle = getVehicleForContract(userVIN);
 
             System.out.println("Please provide your full name:");
             String userFullName = scanner.nextLine().trim();
@@ -213,37 +225,42 @@ public class UserInterface {
             System.out.println("Please provide your email address:");
             String userEmail = scanner.nextLine().trim();
 
-            if (userVehicle == null) {
-                System.out.println("Vehicle with VIN " + userVIN + " not found.");
-                return;
-            }
 
-            if (contractType.equalsIgnoreCase("Lease") && (currentYear - userVehicle.getYear() > 3)){
+            if (userVehicle != null && contractType.equalsIgnoreCase("Lease") && (currentYear - userVehicle.getYear() > 3)){
                 System.out.println("You cannot lease vehicle over 3 years old");
                 return;
             }
 
-            if(contractType.equalsIgnoreCase("Sale")){
+            displayContract(dealership.getContract(contractType,date,userFullName,userEmail,userVehicle,financeQuestion));
 
-                System.out.println("Do you need finance:");
-                boolean financeQuestion = scanner.nextLine().trim().equalsIgnoreCase("yes");
-
-                Contract saleContract = new SalesContract(date,userFullName,userEmail, userVehicle,financeQuestion);
-                ContractFileManager.writeContractToFile(saleContract);
-
-            }else if (contractType.equalsIgnoreCase("Lease")){
-                Contract leaseContract = new LeaseContract(date,userFullName,userEmail,userVehicle);
-                ContractFileManager.writeContractToFile(leaseContract);
-
-            }else{
-                System.out.println("Invalid contract type. Please enter 'Sale' or 'Lease'.");
-            }
         }catch (Exception e){
             System.out.println(e.getMessage());
         }
+    }
 
+    public Vehicle getVehicleForContract (String userVIN){
+        Vehicle userVehicle = null;
+        for (Vehicle vehicle: dealership.getInventory()){
+            if (vehicle.getVinNumber().equalsIgnoreCase(userVIN)){
+                userVehicle = vehicle;
+                System.out.println("Vehicle found: " + userVehicle.toFileString());
+            }
+        }
+        if (userVehicle == null) {
+            System.out.println("Vehicle with VIN " + userVIN + " not found.");
+        }
 
+        return userVehicle;
+    }
 
+    public <T extends Contract> void displayContract (T contract){
+
+        if(contract instanceof SalesContract){
+            System.out.println("Sales contract was successfully created. Congratulations with a new purchase!");
+        }else if (contract instanceof LeaseContract){
+            System.out.println("Lease contract was successfully created. Congratulations with a new purchase!");
+        }
+        System.out.println(contract.toFileString());
     }
 }
 

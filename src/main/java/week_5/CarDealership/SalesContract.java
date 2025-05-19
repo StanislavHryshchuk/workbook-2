@@ -4,13 +4,23 @@ public class SalesContract extends Contract {
 
     private double recordingFee = 100;
     private boolean financeQuestion;
+    private double monthlyPayment;
+    private double salesTaxAmount;
+    private double processingFee;
 
-    public SalesContract(String date, String customerName, String customerEmail, Vehicle vehicle, boolean financeQuestion) {
-        super(date, vehicle, customerName, customerEmail);
+    public SalesContract(String typeOfContract,String date, String customerName, String customerEmail, Vehicle vehicle, boolean financeQuestion) {
+        super(typeOfContract, date, vehicle, customerName, customerEmail);
         this.financeQuestion = financeQuestion;
-
     }
 
+    public SalesContract(String typeOfContract,String date, String customerName, String customerEmail, Vehicle vehicle,double salesTaxAmount, double recordingFee, double processingFee, String financeQuestion, double monthlyPayment) {
+        super(typeOfContract, date, vehicle, customerName, customerEmail);
+        this.financeQuestion = financeQuestion.equalsIgnoreCase("Yes");
+        this.recordingFee = recordingFee;
+        this.salesTaxAmount = salesTaxAmount;
+        this.monthlyPayment = monthlyPayment;
+        this.processingFee = processingFee;
+    }
     public double getRecordingFee() {
         return recordingFee;
     }
@@ -31,7 +41,8 @@ public class SalesContract extends Contract {
     public String toFileString() {
         String financeStatus = isFinanceQuestion() ? "YES" : "NO";
         return String.format(
-                "SALE|%s|%s|%s|%s|%.2f|%.2f|%.2f|%.2f|%s|%.2f",
+                "%s|%s|%s|%s|%s|%.2f|%.2f|%.2f|%.2f|%s|%.2f",
+                getTypeOfContract(),
                 getDate(),
                 getCustomerName(),
                 getCustomerEmail(),

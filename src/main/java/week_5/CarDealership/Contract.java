@@ -5,6 +5,7 @@ import java.util.Scanner;
 
 public abstract class Contract {
     public Scanner scanner = new Scanner(System.in);
+    private String typeOfContract;
     private String date;
     private String customerName;
     private String customerEmail;
@@ -12,11 +13,20 @@ public abstract class Contract {
     private double totalPrice;
     private double monthlyPayment;
 
-    public Contract(String date, Vehicle vehicle, String customerName, String customerEmail) {
+    public Contract(String typeOfContract, String date, Vehicle vehicle, String customerName, String customerEmail) {
+        this.typeOfContract = typeOfContract;
         this.date = date;
         this.vehicle = vehicle;
         this.customerName = customerName;
         this.customerEmail = customerEmail;
+    }
+
+    public String getTypeOfContract() {
+        return typeOfContract;
+    }
+
+    public void setTypeOfContract(String typeOfContract) {
+        this.typeOfContract = typeOfContract;
     }
 
     public String getDate() {
