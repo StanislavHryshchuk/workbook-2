@@ -16,7 +16,7 @@ public class LanguageDao {
         this.dataSource = dataSource;
     }
 
-    public List<Language> getAllLanguages(){
+    public List<Language> getAll(){
         List<Language> languageList = new ArrayList<>();
 
         try(
@@ -28,14 +28,13 @@ public class LanguageDao {
             while (resultSet.next()){
                 languageList.add(new Language(resultSet.getInt("language_id"), resultSet.getString("name")));
             }
-
         }catch (SQLException e){
             e.printStackTrace();
         }
         return languageList;
     }
 
-    public Optional<Language>  getLanguageById(int id){
+    public Optional<Language> getLanguageById(int id){
         try(
                 Connection connection = dataSource.getConnection();
                 PreparedStatement ps = connection.prepareStatement(
@@ -70,7 +69,6 @@ public class LanguageDao {
         }
         return null;
     }
-
 
     public void printList(List<Language> languageList){
         for (Language language: languageList){

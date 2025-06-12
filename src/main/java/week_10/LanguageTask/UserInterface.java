@@ -2,12 +2,11 @@ package week_10.LanguageTask;
 
 import org.apache.commons.dbcp2.BasicDataSource;
 
-import java.util.Optional;
 import java.util.Scanner;
 
 public class UserInterface {
     private static Scanner scanner = new Scanner(System.in);
-    private static LanguageDao languageDaoDataManager;
+    private static LanguageDao languageDao;
 
     public static void HoneScreen(String[] args){
         init(args);
@@ -24,21 +23,19 @@ public class UserInterface {
                 int userChoice = Integer.parseInt(scanner.nextLine().trim());
 
                 switch (userChoice){
-                    case 1 -> languageDaoDataManager.printList(languageDaoDataManager.getAllLanguages());
-                    case 2 -> System.out.println(languageDaoDataManager.getLanguageById(PromptUtil.promptUserLanguageID()).orElseGet(() -> new Language(7, "Ukrainian")));
-                    case 3 -> System.out.println(languageDaoDataManager.getLanguageByName(PromptUtil.promptUserLanguageName()));
+                    case 1 -> languageDao.printList(languageDao.getAll());
+                    case 2 -> System.out.println(languageDao.getLanguageById(PromptUtil.promptUserLanguageID()).orElseGet(() -> new Language(7, "Ukrainian")));
+                    case 3 -> System.out.println(languageDao.getLanguageByName(PromptUtil.promptUserLanguageName()));
                     case 4 -> {
                         System.out.println("Bye");
                         homeScreenRunning = false;
                     }
                     default -> System.out.println("Invalid input");
                 }
-
             }
         }catch (NumberFormatException e){
             System.out.println(e.getMessage());
         }
-
     }
     public static void init(String[] args){
         if(args.length != 2){
@@ -52,6 +49,6 @@ public class UserInterface {
         dataSource.setUrl("jdbc:mysql://localhost:3306/sakila");
         dataSource.setUsername(username);
         dataSource. setPassword(password);
-        languageDaoDataManager = new LanguageDao(dataSource);
+        languageDao = new LanguageDao(dataSource);
     }
 }
