@@ -70,7 +70,6 @@ public class ShippersDAO {
         }catch (SQLException e){
             e.printStackTrace();
         }
-
     }
 
     public void delete(int id){

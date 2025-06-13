@@ -243,11 +243,11 @@ public class UserInterface {
         for (Vehicle vehicle: dealership.getInventory()){
             if (vehicle.getVinNumber().equalsIgnoreCase(userVIN)){
                 userVehicle = vehicle;
-                System.out.println("Vehicle found: " + userVehicle.toFileString());
+                System.out.println("week_10.CarDealership.Vehicle found: " + userVehicle.toFileString());
             }
         }
         if (userVehicle == null) {
-            System.out.println("Vehicle with VIN " + userVIN + " not found.");
+            System.out.println("week_10.CarDealership.Vehicle with VIN " + userVIN + " not found.");
         }
 
         return userVehicle;

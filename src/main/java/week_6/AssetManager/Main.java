@@ -12,9 +12,9 @@ public class Main {
 
         House houseCabo = new House("Cabo House", "2024", 700000, "111 Best Street", 2, 3500, 130680);
 
-        Vehicle vehicleHawaii = new Vehicle("Hawaii Vehicle", "2025", 310500, "Audi RS 6", 2020, 50000);
+        Vehicle vehicleHawaii = new Vehicle("Hawaii week_10.CarDealership.Vehicle", "2025", 310500, "Audi RS 6", 2020, 50000);
 
-        Vehicle vehicleCabo = new Vehicle("Cabo Vehicle", "2024", 85500, "BMW X6", 2020, 55000);
+        Vehicle vehicleCabo = new Vehicle("Cabo week_10.CarDealership.Vehicle", "2024", 85500, "BMW X6", 2020, 55000);
 
         assets.add(houseHawaii);
         assets.add(houseCabo);

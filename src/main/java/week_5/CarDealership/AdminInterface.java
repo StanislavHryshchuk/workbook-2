@@ -26,7 +26,7 @@ public class AdminInterface {
             System.out.println("""
                     1. Show all contracts.
                     2. Show contracts by type.
-                    3. Find a contract by Vehicle.
+                    3. Find a contract by week_10.CarDealership.Vehicle.
                     0. Exit.""");
             try {
                 int userChoice = Integer.parseInt(scanner.nextLine());
@@ -78,7 +78,7 @@ public class AdminInterface {
 
     public List<Contract> getContractsByVehicleVIN(List<Contract> contracts){
 
-        System.out.println("Please enter the Vehicle VIN");
+        System.out.println("Please enter the week_10.CarDealership.Vehicle VIN");
         String adminVin = scanner.nextLine().trim().replaceAll("\\s{2,}"," ");
 
         List<Contract> contractsVehicleVIN = new ArrayList<>();
