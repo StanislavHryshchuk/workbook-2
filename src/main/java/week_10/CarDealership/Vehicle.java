@@ -1,5 +1,7 @@
 package week_10.CarDealership;
 
+import java.util.List;
+
 public class Vehicle {
     private int dealershipID;
     private int id;
@@ -116,6 +118,8 @@ public class Vehicle {
     public void setSold(boolean sold) {
         this.sold = sold;
     }
+
+
 
     @Override
     public String toString() {

@@ -91,13 +91,7 @@ public class DealershipDAO {
         }
     }
 
-    public void printList(List<Dealership> dealershipList){
-        for (Dealership dealership: dealershipList){
-            System.out.println(dealership);
-        }
+    public String add (){
+        return "string";
     }
-
-
-
-
 }

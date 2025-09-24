@@ -6,73 +6,62 @@ import java.util.Scanner;
 public class UserPrompt {
     private static Scanner scanner = new Scanner(System.in);
 
-
-    public String getUserDealershipId(){
-        return scanner.nextLine();
-    }
-
-    public Vehicle createVehiclePrompt(){
+    public static Vehicle createVehiclePrompt(){
 
         Vehicle vehicle = new Vehicle();
 
-        System.out.println("Please enter Dealership ID:");
-        vehicle.setDealershipID(Integer.parseInt(scanner.nextLine().trim()));
+        vehicle.setDealershipID(getInt("Please enter Dealership ID: "));
 
-        System.out.println("Please enter the VIN number:");
-        vehicle.setVIN(scanner.nextLine().trim().toUpperCase());
+        vehicle.setVIN(getString("Please enter the VIN number: ").toUpperCase());
 
-        System.out.println("Please enter the year of production:");
-        vehicle.setYear(Integer.parseInt(scanner.nextLine().trim()));
+        vehicle.setYear(getInt("Please enter the year of production: "));
 
-        System.out.println("Please enter the Make of the vehicle:");
-        vehicle.setMake(scanner.nextLine().trim());
+        vehicle.setMake(getString("Please enter the Make of the vehicle: "));
 
-        System.out.println("Please enter the Model of the vehicle:");
-        vehicle.setModel(scanner.nextLine().trim());
+        vehicle.setModel(getString("Please enter the Model of the vehicle: "));
 
-        System.out.println("Please enter the Type of the vehicle:");
-        vehicle.setType(scanner.nextLine().trim());
+        vehicle.setType(getString("Please enter the Type of the vehicle: "));
 
-        System.out.println("Please enter the Color of the vehicle:");
-        vehicle.setColor(scanner.nextLine().trim());
+        vehicle.setColor(getString("Please enter the Color of the vehicle: "));
 
-        System.out.println("Please enter the Odometer of the vehicle:");
-        vehicle.setOdometer(Integer.parseInt(scanner.nextLine().trim()));
+        vehicle.setOdometer(getInt("Please enter the Odometer of the vehicle: "));
 
-        System.out.println("Please enter the Price of the vehicle:");
-        vehicle.setPrice(Double.parseDouble(scanner.nextLine().trim()));
+        vehicle.setPrice(getDouble("Please enter the Price of the vehicle: "));
 
-        System.out.println("Mark it as sold? (yes / no)");
-        vehicle.setSold(scanner.nextLine().trim().equalsIgnoreCase("yes"));
+        vehicle.setSold(getBoolean("Mark it as sold? (yes / no)"));
 
         return vehicle;
     }
 
-    public Vehicle updatePricePrompt(){
-
-        Vehicle vehicle = new Vehicle();
-
-        System.out.println("Please enter Vehicle ID:");
-        vehicle.setId(Integer.parseInt(scanner.nextLine().trim()));
-
-        System.out.println("Please enter the Price of the vehicle:");
-        vehicle.setPrice(Double.parseDouble(scanner.nextLine().trim()));
-
-        return vehicle;
-    }
-
-    public Dealership createDealershipPrompt(){
+    public static Dealership createDealershipPrompt(){
         Dealership dealership = new Dealership();
 
-        System.out.println("Please enter dealership Name:");
-        dealership.setName(scanner.nextLine().trim());
+        dealership.setName(getString("Please enter dealership Name: "));
 
-        System.out.println("Please enter dealership Address:");
-        dealership.setAddress(scanner.nextLine().trim());
+        dealership.setAddress(getString("Please enter dealership Address:"));
 
-        System.out.println("Please enter dealership Phone:");
-        dealership.setPhone(scanner.nextLine().trim());
+        dealership.setPhone(getString("Please enter dealership Phone:"));
 
         return dealership;
+    }
+
+    public static boolean getBoolean(String prompt){
+        System.out.println(prompt);
+        return scanner.nextLine().trim().equalsIgnoreCase("yes");
+    }
+
+    public static int getInt(String prompt){
+        System.out.println(prompt);
+        return Integer.parseInt(scanner.nextLine().trim());
+    }
+
+    public static String getString(String prompt){
+        System.out.println(prompt);
+        return scanner.nextLine().trim();
+    }
+
+    public static double getDouble(String prompt){
+        System.out.println(prompt);
+        return Double.parseDouble(scanner.nextLine().trim());
     }
 }

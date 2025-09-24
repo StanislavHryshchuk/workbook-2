@@ -1,7 +1,10 @@
 package week_10.CarDealership;
 
 import org.apache.commons.dbcp2.BasicDataSource;
+import week_5.CarDealership.PrintHelper;
 
+import java.util.List;
+import java.util.Objects;
 import java.util.Scanner;
 
 
@@ -9,7 +12,8 @@ public class UserInterface {
     private static Scanner scanner = new Scanner(System.in);
     private static DealershipDAO dealershipDAO;
     private static VehicleDAO vehicleDAO;
-    private static UserPrompt prompt;
+
+
 
     public static void userMenu(String[] args){
         init(args);
@@ -19,15 +23,6 @@ public class UserInterface {
             System.out.println("Please select a menu option from 1 - 9 | 0 -> Exit");
             System.out.println("""
                     1. User DAO Interface
-                    2. Find vehicles by make/model.
-                    3. Find vehicles by year range.
-                    4. Find vehicles by color.
-                    5. Find vehicles by mileage range.
-                    6. Find vehicles by type(car, truck,SUV,van)
-                    7. List all vehicles.
-                    8. Add a vehicle.
-                    9. Remove a vehicle.
-                    10. Create a contract.
                     0. Exit.""");
             try {
                 int userChoice = Integer.parseInt(scanner.nextLine());
@@ -35,33 +30,6 @@ public class UserInterface {
                 switch (userChoice) {
                     case 1:
                         userDAOInterface();
-                        break;
-                    case 2:
-                        processByMakeModelRequest();
-                        break;
-                    case 3:
-                        processByYearRequest();
-                        break;
-                    case 4:
-                        processByColorRequest();
-                        break;
-                    case 5:
-                        processByMileageRequest();
-                        break;
-                    case 6:
-                        processByTypeRequest();
-                        break;
-                    case 7:
-                        processAllVehicleRequest();
-                        break;
-                    case 8:
-                        processAddVehicleRequest();
-                        break;
-                    case 9:
-                        processRemoveVehicleRequest();
-                        break;
-                    case 10:
-                        processContractInformationRequest();
                         break;
                     case 0:
                         userMenuRunning = false;
@@ -83,11 +51,18 @@ public class UserInterface {
                     1. Dealerships
                     2. Inventory
                     3. Sales Contracts
-                    4. Vehicles""");
+                    4. Vehicles
+                    0. Back""");
 
             int userChoice = Integer.parseInt(scanner.nextLine().trim());
             switch (userChoice){
                 case 1 -> dealershipDAOMenu();
+                case 4 -> vehicleDAOMenu();
+                case 0 -> {
+                    System.out.println("Returning back to Home Screen...");
+                    userDAORunning = false;
+                }
+                default -> System.out.println("Invalid input. Please try again");
             }
         }
     }
@@ -108,16 +83,14 @@ public class UserInterface {
                 int userChoice = Integer.parseInt(scanner.nextLine().trim());
 
                 switch (userChoice){
-                    case 1 -> dealershipDAO.printList(dealershipDAO.getAll());
-                    case 2 -> dealershipDAO.add(prompt.createDealershipPrompt());
-                    case 3 -> {
-                        System.out.println("Please enter dealership ID:");
-                        dealershipDAO.update(Integer.parseInt(scanner.nextLine().trim()),prompt.createDealershipPrompt());
-                    }
-                    case 4 -> {
-                        System.out.println("Please enter dealership ID:");
-                        dealershipDAO.remove(Integer.parseInt(scanner.nextLine().trim()));
-                    }
+//                    case 1 -> printList(dealershipDAO.getAll());
+
+                    case 2 -> dealershipDAO.add(UserPrompt.createDealershipPrompt());
+
+                    case 3 -> dealershipDAO.update(UserPrompt.getInt("Please enter dealership ID: "), UserPrompt.createDealershipPrompt());
+
+                    case 4 -> dealershipDAO.remove(UserPrompt.getInt("Please enter dealership ID: "));
+
                     case 0 -> {
                         System.out.println("Bye");
                         dealershipDAOMenuRunning = false;
@@ -130,13 +103,86 @@ public class UserInterface {
         }
     }
 
-    public static void
+    public static void vehicleDAOMenu(){
+        boolean vehicleDAOMenuRunning = true;
+        try{
+            while (vehicleDAOMenuRunning){
+                System.out.println("Select from the following option.");
+                System.out.println("""
+                1. All Vehicles.
+                2. Add Vehicle.
+                3. Update Price.
+                4. Update Sold.
+                5. Remove Vehicle.
+                6. Find vehicles by price range.
+                7. Find vehicles by make/model.
+                8. Find vehicles by year range.
+                9. Find vehicles by color.
+                10. Find vehicles by mileage range.
+                11. Find vehicles by type(car, truck,SUV,van)
+                0. Back
+                """);
+                int userChoice = Integer.parseInt(scanner.nextLine().trim());
+
+                switch (userChoice){
+                    case 1 -> PrintHelper.listToTable(vehicleDAO.getAll());
+
+                    case 2 -> vehicleDAO.add(UserPrompt.createVehiclePrompt());
+
+                    case 3 -> vehicleDAO.updatePrice(
+                            UserPrompt.getInt("Enter Vehicle ID: "),
+                            UserPrompt.getDouble("Enter the price: "));
+
+                    case 4 -> vehicleDAO.updateSold(
+                            UserPrompt.getInt("Enter Vehicle ID: "),
+                            UserPrompt.getBoolean("Type 'Yes' to mark Vehicle as Sold"));
+
+                    case 5 -> vehicleDAO.remove(UserPrompt.getInt("Enter Vehicle ID: "));
+
+                    case 6 -> PrintHelper.listToTable(
+                            vehicleDAO.findVehiclesByPriceRange(
+                                    UserPrompt.getDouble("Enter min Price: "),
+                                    UserPrompt.getDouble("Enter max Price: ")));
+
+                    case 7 -> PrintHelper.listToTable(
+                            vehicleDAO.findVehicleByMakeModel(
+                                UserPrompt.getString("Enter Make: "),
+                                UserPrompt.getString("Enter Model: ")));
+
+                    case 8 -> PrintHelper.listToTable(
+                            vehicleDAO.findVehiclesByYearRange(
+                                    UserPrompt.getInt("Enter min year: "),
+                                    UserPrompt.getInt("Enter max year:")));
+
+                    case 9 -> PrintHelper.listToTable(
+                            vehicleDAO.findVehiclesByColor(
+                                    UserPrompt.getString("Enter color of the Vehicle: ")));
+
+                    case 10 -> PrintHelper.listToTable(
+                            vehicleDAO.findVehiclesByMileageRange(
+                                    UserPrompt.getInt("Enter min mileage: "),
+                                    UserPrompt.getInt("Enter max mileage: ")));
+
+                    case 11 -> PrintHelper.listToTable(
+                            vehicleDAO.findVehiclesByType(
+                                    UserPrompt.getString("Enter type of The Vehicle: ")));
+
+                    case 0 -> {
+                        System.out.println("Returning back to DAO Screen...");
+                        vehicleDAOMenuRunning = false;
+                    }
+                    default -> System.out.println("Invalid input. Try again");
+                }
+            }
+        }catch (NumberFormatException e){
+            System.out.println(e.getMessage());
+        }
+    }
 
     public static void init(String[] args){
         if (args.length != 2){
             System.out.println("Need 2 arguments to work");
         }
-
         String username = args[0];
         String password = args[1];
 
@@ -148,6 +194,5 @@ public class UserInterface {
 
         dealershipDAO = new DealershipDAO(dataSource);
         vehicleDAO = new VehicleDAO(dataSource);
-
     }
 }
